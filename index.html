@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <title>BlackJack</title>
+</head>
+
+<body>
+
+    <header id="header">
+        <h1>BlackJack</h1>
+    </header>
+
+    <!-- <section id="start-screen">
+        <div class="start-card">
+            <input id="user-name-input" type="text" required placeholder="What is your name?" autocomplete="off">
+            <button id="start-btn">Start Game</button>
+        </div>
+    </section> -->
+
+    <main id="main-screen">
+
+        <div id="deck-container">
+            <h3>Deck</h3>
+            <div id="deck-length-wrapper">
+                Cards Remaining: <span id="deck-length">52</span>
+            </div>
+            <div id="deck">
+                <button id="deal-cards-btn">Deal<br>Cards</button>
+            </div>
+        </div>
+
+        <div id="bot-container" class="player-container">
+            <h3>PLayer: <span id="bot-name-wrapper">Bot</span></h3>
+            <div id="bot-hand-container" class="player-hand-container">
+            </div>
+        </div>
+
+        <div id="msg-container">You LOST!</div>
+
+        <div id="user-container" class="player-container">
+            <h3>Player: You</h3>
+            <div class="player-score">Your score: <span id="user-score-wrapper">00</span></div>
+            <div class="choice-btns-wrapper">
+                <button id="hit" class="choice-btn">HIT</button>
+                <button id="stand" class="choice-btn">STAND</button>
+            </div>
+
+            <div id="user-hand-container" class="player-hand-container"></div>
+        </div>
+
+    </main>
+
+    <!-- <script src="cards.js"></script> -->
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
