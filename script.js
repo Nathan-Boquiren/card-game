@@ -1,7 +1,7 @@
 let cl = console.log;
 let ct = console.table;
 
-// ===== Build Deck =====
+// ===== Import Deck and Functions =====
 
 import {
   deck,
@@ -13,45 +13,50 @@ import {
   userPlayer,
   calculateScore,
   hit,
+  stand,
 } from "./logic.js";
 
-// ===== Start Screen =====
+// ===== DOM Elements =====
 
-// let startScreen = document.getElementById("start-screen");
-// let mainScreen = document.getElementById("main-screen");
-// let userNameInput = document.getElementById("user-name-input");
-// let startBtn = document.getElementById("start-btn");
-// let userName = "";
+const startScreen = document.getElementById("start-screen");
+const mainScreen = document.getElementById("main-screen");
+const userNameInput = document.getElementById("user-name-input");
+const startBtn = document.getElementById("start-btn");
+const dealCardBtn = document.getElementById("deal-cards-btn");
+const deckContainer = document.getElementById("deck");
+const botContainer = document.getElementById("bot-hand-container");
+const userContainer = document.getElementById("user-hand-container");
+const cardsLeftWrapper = document.getElementById("deck-length");
+const userScoreWrapper = document.getElementById("user-score-wrapper");
+const choiceBtns = document.querySelectorAll(".choice-btn");
 
-// ===== Event listeners to start game =====
+// ===== Global Variables =====
 
-// startBtn.addEventListener("click", () => {
-//   if (userNameInput.value !== "") {
-//     startGame();
-//   } else {
-//     alert("Enter your name, dude.");
-//   }
-// });
+let userName = "";
 
-// userNameInput.addEventListener("keydown", (e) => {
-//   if (e.key === "Enter" && userNameInput.value !== "") {
-//     startGame();
-//   }
-// });
+// ===== Start Screen Event Listeners =====
 
-// function startGame() {
-// cl("START GAME");
-// startScreen.style.display = "none";
-// mainScreen.style.display = "block";
-// userName = userNameInput.value;
+startBtn.addEventListener("click", () => {
+  if (userNameInput.value !== "") {
+    startGame();
+  } else {
+    alert("Enter your name, dude.");
+  }
+});
 
-// populatePlayers("Nathan");
-// populateDeckContainer(deck);
-// }
+userNameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && userNameInput.value !== "") {
+    startGame();
+  }
+});
 
-populatePlayers("Nathan");
-
-document.getElementById("bot-name-wrapper").innerHTML = `${botPlayer.name}`;
+function startGame() {
+  cl("===== START GAME =====");
+  startScreen.style.display = "none";
+  mainScreen.style.display = "flex";
+  userName = userNameInput.value;
+  populateDeckContainer(deck);
+}
 
 // ===== Style Main Section Height =====
 
@@ -70,63 +75,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ===== Populate DOM with card deck =====
 
-let deckContainer = document.getElementById("deck");
-let botContainer = document.getElementById("bot-hand-container");
-let userContainer = document.getElementById("user-hand-container");
-
-if (deck) {
-  populateDeckContainer(deck);
-}
-
 function populateDeckContainer(deck) {
-  // cl("deck repopulated");
-  // cl(`deck length: ${deck.length}`);
+  cl(`deck length: ${deck.length}`);
   deckContainer.innerHTML = `<button id="deal-cards-btn">Deal<br>Cards</button>`;
   deck.forEach((card) => {
     deckContainer.innerHTML += `
-      <div class="card ${card.suit}-${card.rank}">
-        </div>`;
-    document.querySelector(
-      `.${card.suit}-${card.rank}`
-    ).style.backgroundImage = `url(card-images/${card.suit}-${card.rank}.png)`;
+      <div class="card ${card.suit}-${card.rank}" style="background-image: url(card-images/${card.suit}-${card.rank}.png)">
+      </div>`;
+  });
+
+  document.getElementById("deal-cards-btn").addEventListener("click", () => {
+    dealCardsDOM();
   });
 }
 
-// ===== Event listener to deal cards in DOM =====
+// ===== Populate player names in DOM =====
 
-function populateHand(player, container) {
-  container.innerHTML = "";
-  player.hand.forEach((card) => {
-    container.innerHTML += `
-        <div class="card ${card.suit}-${card.rank}">
-        </div>`;
-    document.querySelector(
-      `.${card.suit}-${card.rank}`
-    ).style.backgroundImage = `url(card-images/${card.suit}-${card.rank}.png)`;
-  });
+function populateNames() {
+  document.getElementById("bot-name-wrapper").innerHTML = `${botPlayer.name}`;
+  document.getElementById("user-name-wrapper").innerHTML = `${userPlayer.name}`;
 }
 
-document.getElementById("deal-cards-btn").addEventListener("click", () => {
+// ===== Deal Cards in DOM =====
+
+function dealCardsDOM() {
+  populatePlayers(userName);
+  populateNames();
   calculateScore(userPlayer);
   calculateScore(botPlayer);
   ct(botPlayer);
   ct(userPlayer);
   updateDom();
   document.getElementById("deal-cards-btn").style.display = "none";
-});
+  stylePlayerCards();
+}
+
+// ===== Style Player Cards Overlap =====
+
+function stylePlayerCards() {
+  const playerContainers = document.querySelectorAll(".player-hand-container");
+  playerContainers.forEach((container) => {
+    const cards = container.querySelectorAll(".card");
+    const totalCards = cards.length;
+    container.style.width = `${280 + totalCards * 10}px`;
+    const containerWidth = container.clientWidth;
+    cl(`container width: ${containerWidth}`);
+    const cardWidth = cards[0].clientWidth;
+    const offset = (containerWidth - cardWidth) / (totalCards - 1);
+    cards.forEach((card, i) => {
+      card.style.left = `${i * offset}px`;
+    });
+  });
+}
 
 // ===== Event Listeners for User Choice Btns =====
-
-const hitBtn = document.getElementById("hit");
-const standBtn = document.getElementById("stand");
-const choiceBtns = document.querySelectorAll(".choice-btn");
 
 choiceBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     cl(`User chose to ${btn.id}`);
     if (btn.id === "hit") {
       hit(userPlayer);
-    } else {
+    } else if (btn.id === "stand") {
       stand();
     }
     updateDom();
@@ -134,8 +143,8 @@ choiceBtns.forEach((btn) => {
 });
 
 // ===== Update Cards left in deck =====
+
 function updateCardsLeft(deck) {
-  let cardsLeftWrapper = document.getElementById("deck-length");
   cardsLeftWrapper.innerHTML = deck.length;
 }
 
@@ -144,7 +153,6 @@ function updateCardsLeft(deck) {
 function updateUserScore() {
   calculateScore(userPlayer);
   cl(`user score: ${userPlayer.score}`);
-  let userScoreWrapper = document.getElementById("user-score-wrapper");
   userScoreWrapper.innerHTML = `${userPlayer.score}`;
 }
 
@@ -169,7 +177,16 @@ function updateDom() {
   populateDeckContainer(deck);
   populateHand(botPlayer, botContainer);
   populateHand(userPlayer, userContainer);
+  stylePlayerCards();
   updateCardsLeft(deck);
-  // calculateScore(userPlayer);
   updateUserScore();
+}
+
+function populateHand(player, container) {
+  container.innerHTML = "";
+  player.hand.forEach((card) => {
+    container.innerHTML += `
+      <div class="card ${card.suit}-${card.rank}" style="background-image: url(card-images/${card.suit}-${card.rank}.png)">
+      </div>`;
+  });
 }

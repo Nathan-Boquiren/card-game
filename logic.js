@@ -132,3 +132,8 @@ export function calculateScore(player) {
 export function hit(player) {
   player.hand.push(dealCard(deck));
 }
+// User STAND function
+export function stand() {
+  botPlayer.hand.push(dealCard(deck));
+  // calculateScore(botPlayer);
+}
