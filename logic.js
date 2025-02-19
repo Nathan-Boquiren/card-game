@@ -75,15 +75,20 @@ export let botPlayer = "";
 export let userPlayer = "";
 
 let playerNames = [
-  "Ben",
+  "Brianna",
+  "Brennan",
+  "Andrew",
   "Jacob",
+  "Kole",
+  "Jacob",
+  "Daniel",
+  "Katie",
+  "Summer",
+  "Aria",
   "Hunter",
   "Hannah",
-  "Katie",
-  "Brianna",
-  "Daniel",
-  "Kole",
-  "Andrew",
+  "Gaines",
+  "Ben",
 ];
 
 export function populatePlayers(userName) {
@@ -121,10 +126,12 @@ export function calculateScore(player) {
   // return score;
   player.score = score;
 
+  // compareScores();
+
   if (score === 21) {
     winLose(player.name, "Won");
   } else if (score > 21) {
-    winLose(player.name, "Lost");
+    winLose(player.name, "Busted");
   }
 }
 
@@ -134,6 +141,34 @@ export function hit(player) {
 }
 // User STAND function
 export function stand() {
-  botPlayer.hand.push(dealCard(deck));
-  // calculateScore(botPlayer);
+  dealerTurn();
+}
+
+// ===== Dealer Turn =====
+
+function dealerTurn() {
+  calculateScore(botPlayer);
+  if (botPlayer.score < 17) {
+    hit(botPlayer);
+    setTimeout(dealerTurn, 500);
+  } else if (botPlayer.score >= 17 && botPlayer.score < 21) {
+    cl(`Bot chose to stand with ${botPlayer.score}`);
+    compareScores();
+  } /* else if (botPlayer.score > 21) {
+    winLose(botPlayer.name, "Busted");
+  } */
+}
+
+// ===== Compare Scores =====
+
+function compareScores() {
+  cl(`bot score: ${botPlayer.score}`);
+  cl(`user score: ${userPlayer.score}`);
+  if (userPlayer.score > botPlayer.score) {
+    winLose(userPlayer.name, `Won by ${userPlayer.score - botPlayer.score}`);
+  } else if (userPlayer.score < botPlayer.score) {
+    winLose(botPlayer.name, `Won by ${botPlayer.score - userPlayer.score}`);
+  } else {
+    winLose("It's a tie!");
+  }
 }

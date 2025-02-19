@@ -102,12 +102,23 @@ function dealCardsDOM() {
   populatePlayers(userName);
   populateNames();
   calculateScore(userPlayer);
-  calculateScore(botPlayer);
-  ct(botPlayer);
-  ct(userPlayer);
+  // calculateScore(botPlayer);
+  // ct(botPlayer);
+  // ct(userPlayer);
   updateDom();
   document.getElementById("deal-cards-btn").style.display = "none";
   stylePlayerCards();
+  animateDeal(botContainer);
+  animateDeal(userContainer);
+}
+
+// === Animate Initial Deal ===
+
+function animateDeal(container) {
+  container.classList.add("show-cards");
+  setTimeout(() => {
+    container.classList.remove("show-cards");
+  }, 300);
 }
 
 // ===== Style Player Cards Overlap =====
@@ -116,14 +127,14 @@ function stylePlayerCards() {
   const playerContainers = document.querySelectorAll(".player-hand-container");
   playerContainers.forEach((container) => {
     const cards = container.querySelectorAll(".card");
-    const totalCards = cards.length;
-    container.style.width = `${280 + totalCards * 10}px`;
-    const containerWidth = container.clientWidth;
-    cl(`container width: ${containerWidth}`);
-    const cardWidth = cards[0].clientWidth;
-    const offset = (containerWidth - cardWidth) / (totalCards - 1);
+    const cardWidth = 178.5714286;
+    const overlap = 50;
+    const newContainerWidth = cardWidth + (cards.length - 1) * overlap;
+
+    container.style.width = `${newContainerWidth}px`;
+
     cards.forEach((card, i) => {
-      card.style.left = `${i * offset}px`;
+      card.style.left = `${i * overlap}px`;
     });
   });
 }
@@ -135,12 +146,25 @@ choiceBtns.forEach((btn) => {
     cl(`User chose to ${btn.id}`);
     if (btn.id === "hit") {
       hit(userPlayer);
+      updateDom();
     } else if (btn.id === "stand") {
       stand();
+      flipBotCard();
     }
-    updateDom();
   });
 });
+
+// ===== Flip Bot Card =====
+
+function flipBotCard() {
+  cl(" ===== flipping dealer card =====");
+  botContainer.classList.add("remove-after");
+  botContainer.classList.add("flip-card");
+  setTimeout(() => {
+    botContainer.classList.remove("flip-card");
+    // cl(`bot score: ${botPlayer.score}`);
+  }, 1000);
+}
 
 // ===== Update Cards left in deck =====
 
