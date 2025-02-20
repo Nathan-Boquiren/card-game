@@ -108,7 +108,7 @@ export function createPlayer(name) {
 
 // ===== Win/Lose Functions =====
 
-import { winLose } from "./script.js";
+import { winLose, updateDom } from "./script.js";
 
 // ===== Calculate Scores =====
 
@@ -117,21 +117,20 @@ export function calculateScore(player) {
   player.hand.forEach((card) => {
     if (card.rank >= 11 && card.rank < 14) {
       score += 10;
-    } else if (card.rank === 14) {
+    } else if (card.rank === 14 && score <= 10) {
       score += 11;
+    } else if (card.rank === 14 && score > 10) {
+      score += 1;
     } else {
       score += card.rank;
     }
   });
-  // return score;
   player.score = score;
 
-  // compareScores();
-
   if (score === 21) {
-    winLose(player.name, "Won");
+    winLose(`Congrats, ${player.name}`, "won");
   } else if (score > 21) {
-    winLose(player.name, "Busted");
+    winLose(`Oh. ${player.name}`, "busted");
   }
 }
 
@@ -139,6 +138,7 @@ export function calculateScore(player) {
 export function hit(player) {
   player.hand.push(dealCard(deck));
 }
+
 // User STAND function
 export function stand() {
   dealerTurn();
@@ -149,14 +149,19 @@ export function stand() {
 function dealerTurn() {
   calculateScore(botPlayer);
   if (botPlayer.score < 17) {
+    cl(`Bot chose to hit with ${botPlayer.score}`);
     hit(botPlayer);
+    setTimeout(() => {
+      updateDom();
+    }, 500);
+
     setTimeout(dealerTurn, 500);
   } else if (botPlayer.score >= 17 && botPlayer.score < 21) {
     cl(`Bot chose to stand with ${botPlayer.score}`);
-    compareScores();
-  } /* else if (botPlayer.score > 21) {
-    winLose(botPlayer.name, "Busted");
-  } */
+    setTimeout(() => {
+      compareScores();
+    }, 500);
+  }
 }
 
 // ===== Compare Scores =====
@@ -165,10 +170,16 @@ function compareScores() {
   cl(`bot score: ${botPlayer.score}`);
   cl(`user score: ${userPlayer.score}`);
   if (userPlayer.score > botPlayer.score) {
-    winLose(userPlayer.name, `Won by ${userPlayer.score - botPlayer.score}`);
+    winLose(
+      `Congrats, ${userPlayer.name}`,
+      `won by ${userPlayer.score - botPlayer.score}`
+    );
   } else if (userPlayer.score < botPlayer.score) {
-    winLose(botPlayer.name, `Won by ${botPlayer.score - userPlayer.score}`);
+    winLose(
+      `Congrats, ${botPlayer.name}`,
+      `won by ${botPlayer.score - userPlayer.score}`
+    );
   } else {
-    winLose("It's a tie!");
+    winLose("It's a tie!", "");
   }
 }

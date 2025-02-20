@@ -20,6 +20,7 @@
             <input id="user-name-input" type="text" required placeholder="What is your name?" autocomplete="off">
             <button id="start-btn">Start Game</button>
         </div>
+        <img src="" alt="">
     </section>
 
     <main id="main-screen">
@@ -36,14 +37,14 @@
 
         <div id="bot-container" class="player-container">
             <h3>PLayer: <span id="bot-name-wrapper"></span></h3>
+            <img src="" alt="" id="bot-img">
             <div id="bot-hand-container" class="player-hand-container">
             </div>
         </div>
 
-        <div id="msg-container">You LOST!</div>
+        <div id="msg-container"><button id="reset-btn" class="choice-btn">RESET</button></div>
 
         <div id="user-container" class="player-container">
-            <!-- <h3>Player: You</h3> -->
             <h3>PLayer: <span id="user-name-wrapper"></span></h3>
             <div class="player-score">Your score: <span id="user-score-wrapper">00</span></div>
             <div class="choice-btns-wrapper">

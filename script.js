@@ -6,9 +6,6 @@ let ct = console.table;
 import {
   deck,
   populatePlayers,
-  // createPlayer,
-  // dealHand,
-  // dealCard,
   botPlayer,
   userPlayer,
   calculateScore,
@@ -22,7 +19,6 @@ const startScreen = document.getElementById("start-screen");
 const mainScreen = document.getElementById("main-screen");
 const userNameInput = document.getElementById("user-name-input");
 const startBtn = document.getElementById("start-btn");
-const dealCardBtn = document.getElementById("deal-cards-btn");
 const deckContainer = document.getElementById("deck");
 const botContainer = document.getElementById("bot-hand-container");
 const userContainer = document.getElementById("user-hand-container");
@@ -56,6 +52,7 @@ function startGame() {
   mainScreen.style.display = "flex";
   userName = userNameInput.value;
   populateDeckContainer(deck);
+  populateNames("Bot", "You");
 }
 
 // ===== Style Main Section Height =====
@@ -68,9 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("main-screen").style.height = `${
     vpHeight - headerHeight
   }px`;
-  document.getElementById(
-    "main-screen"
-  ).style.paddingBottom = `${headerHeight}px`;
+  document.getElementById("main-screen").style.paddingBottom = `${
+    headerHeight / 2
+  }px`;
 });
 
 // ===== Populate DOM with card deck =====
@@ -91,16 +88,16 @@ function populateDeckContainer(deck) {
 
 // ===== Populate player names in DOM =====
 
-function populateNames() {
-  document.getElementById("bot-name-wrapper").innerHTML = `${botPlayer.name}`;
-  document.getElementById("user-name-wrapper").innerHTML = `${userPlayer.name}`;
+function populateNames(botName, userName) {
+  document.getElementById("bot-name-wrapper").innerHTML = `${botName}`;
+  document.getElementById("user-name-wrapper").innerHTML = `${userName}`;
 }
 
 // ===== Deal Cards in DOM =====
 
 function dealCardsDOM() {
   populatePlayers(userName);
-  populateNames();
+  populateNames(botPlayer.name, userPlayer.name);
   calculateScore(userPlayer);
   // calculateScore(botPlayer);
   // ct(botPlayer);
@@ -159,11 +156,6 @@ choiceBtns.forEach((btn) => {
 function flipBotCard() {
   cl(" ===== flipping dealer card =====");
   botContainer.classList.add("remove-after");
-  botContainer.classList.add("flip-card");
-  setTimeout(() => {
-    botContainer.classList.remove("flip-card");
-    // cl(`bot score: ${botPlayer.score}`);
-  }, 1000);
 }
 
 // ===== Update Cards left in deck =====
@@ -186,17 +178,28 @@ const msgContainer = document.getElementById("msg-container");
 
 export function winLose(player, status) {
   cl(`========== ${player} ${status}! ==========`);
-  msgContainer.style.display = `flex`;
-  msgContainer.innerHTML = `${player} ${status}!`;
-  msgContainer.classList.add("fade-in");
+  msgContainer.innerHTML = `<button id="reset-btn" class="choice-btn">RESET</button>`;
+  if (status === "") {
+    msgContainer.innerHTML += `<div>${player}</div>`;
+  } else {
+    msgContainer.innerHTML += `<div>${player} ${status}!</div>`;
+  }
   setTimeout(() => {
-    msgContainer.classList.remove("fade-in");
-  }, 300);
+    msgContainer.style.display = `flex`;
+    msgContainer.classList.add("fade-in");
+    document.getElementById("reset-btn").addEventListener("click", resetGame);
+  }, 500);
+}
+
+// ========== Reset Game Function ==========
+
+function resetGame() {
+  location.reload();
 }
 
 // ========== UPDATE DOM ==========
 
-function updateDom() {
+export function updateDom() {
   cl("updated dom");
   populateDeckContainer(deck);
   populateHand(botPlayer, botContainer);
