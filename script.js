@@ -141,6 +141,10 @@ function stylePlayerCards() {
 choiceBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     cl(`User chose to ${btn.id}`);
+    btn.classList.add("animateBtn");
+    setTimeout(() => {
+      btn.classList.remove("animateBtn");
+    }, 300);
     if (btn.id === "hit") {
       hit(userPlayer);
       updateDom();
@@ -150,6 +154,8 @@ choiceBtns.forEach((btn) => {
     }
   });
 });
+
+// ===== Choice Btn Animations =====
 
 // ===== Flip Bot Card =====
 

@@ -350,7 +350,7 @@ main {
 }
 
 .choice-btn::after {
-    display: none;
+    display: block;
     content: '';
     position: absolute;
     width: 120%;
@@ -358,13 +358,33 @@ main {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(255, 0, 0, 0.445);
+    transform-origin: 0% 0%;
+    background-color: rgba(255, 255, 255, 0.1);
     z-index: -5;
     border-radius: 50%;
+    opacity: 0;
 }
 
-.choice-btn:active::after {
-    display: block;
+/* Button animation */
+
+.choice-btn.animateBtn::after {
+    animation: animateBtn 0.3s linear forwards;
+}
+
+@keyframes animateBtn {
+    0% {
+        opacity: 0;
+        scale: 1;
+    }
+
+    1% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        scale: 2;
+    }
 }
 
 /* ===== Bot Flip Card ===== */
