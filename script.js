@@ -99,9 +99,6 @@ function dealCardsDOM() {
   populatePlayers(userName);
   populateNames(botPlayer.name, userPlayer.name);
   calculateScore(userPlayer);
-  // calculateScore(botPlayer);
-  // ct(botPlayer);
-  // ct(userPlayer);
   updateDom();
   document.getElementById("deal-cards-btn").style.display = "none";
   stylePlayerCards();
@@ -154,8 +151,6 @@ choiceBtns.forEach((btn) => {
     }
   });
 });
-
-// ===== Choice Btn Animations =====
 
 // ===== Flip Bot Card =====
 
