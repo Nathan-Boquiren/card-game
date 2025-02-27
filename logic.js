@@ -27,13 +27,13 @@ function createCard(rank, suit) {
 function getName(rank) {
   let name = "";
   if (rank === 11) {
-    name = "Jack";
+    name = "jack";
   } else if (rank === 12) {
-    name = "Queen";
+    name = "queen";
   } else if (rank === 13) {
-    name = "King";
+    name = "king";
   } else if (rank === 14) {
-    name = "Ace";
+    name = "ace";
   } else {
     name = rank;
   }

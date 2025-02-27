@@ -19,7 +19,6 @@ body {
     background-image: url(green-felt-bg.webp);
     background-size: cover;
     background-position: center;
-
     height: 100vh;
     position: relative;
 }
@@ -105,8 +104,6 @@ main {
     align-items: center;
 }
 
-
-
 #deck-container h3 {
     font-size: 1.5rem;
 }
@@ -144,7 +141,6 @@ main {
     background-position: center;
     background-repeat: no-repeat;
     background-size: 90%;
-
 }
 
 #deck .card {
@@ -391,9 +387,6 @@ main {
 #bot-hand-container.remove-after .card:nth-child(2)::after {
     display: none;
 }
-
-
-
 
 /* ===== responsive design ===== */
 
