@@ -105,6 +105,8 @@ main {
     align-items: center;
 }
 
+
+
 #deck-container h3 {
     font-size: 1.5rem;
 }
@@ -167,7 +169,6 @@ main {
     border-radius: 15px;
     z-index: 10;
     border: none;
-    background-color: transparent;
     background-color: var(--secondary-color);
     outline: 2px solid var(--secondary-color);
     cursor: pointer;
@@ -275,7 +276,6 @@ main {
 }
 
 /* ===== Bot/Dealer Hand ===== */
-
 
 #bot-hand-container .card:nth-child(2)::after {
     content: '';
@@ -390,4 +390,87 @@ main {
 
 #bot-hand-container.remove-after .card:nth-child(2)::after {
     display: none;
+}
+
+
+
+
+/* ===== responsive design ===== */
+
+@media(max-width: 768px) {
+    #header {
+        display: none;
+    }
+
+    #start-screen {
+        height: 100%;
+    }
+
+    #main-screen {
+        padding-bottom: 0 !important;
+        height: 100% !important;
+        justify-content: space-around;
+    }
+
+    #deck-container {
+        left: 50%;
+        z-index: 100;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    #deck-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: inherit;
+        width: inherit;
+        background-color: transparent;
+        backdrop-filter: brightness(0.5);
+        z-index: -1;
+    }
+
+    #deck {
+        height: 200px;
+    }
+
+    #deal-cards-btn {
+        background-color: transparent;
+        color: rgb(3, 37, 0);
+        border: none;
+        outline: none;
+        opacity: 1;
+        text-shadow: none;
+        animation: breathe 0.8s ease alternate infinite;
+    }
+
+    @keyframes breathe {
+        from {
+            scale: 1;
+        }
+
+        to {
+            scale: 1.1;
+        }
+    }
+
+    .card {
+        height: 200px;
+    }
+
+    .player-container {
+        padding: 0.5rem;
+    }
+
+    #msg-container div {
+        font-size: 2rem;
+        margin: 0 2rem;
+        text-wrap: pretty;
+        text-align: center;
+    }
 }
