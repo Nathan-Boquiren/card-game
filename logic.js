@@ -43,9 +43,9 @@ function getName(rank) {
 function getColor(suit) {
   let color = "";
 
-  if (suit === "Spades" || suit === "Clubs") {
+  if (suit === "spades" || suit === "clubs") {
     color = "Black";
-  } else if (suit === "Hearts" || suit === "Diamonds") {
+  } else if (suit === "hearts" || suit === "diamonds") {
     color = "Red";
   }
 
