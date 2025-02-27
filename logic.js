@@ -5,7 +5,7 @@ let ct = console.table;
 
 function buildDeck() {
   let deck = [];
-  const suits = ["Hearts", "Spades", "Diamonds", "Clubs"];
+  const suits = ["hearts", "spades", "diamonds", "clubs"];
   for (let i = 2; i <= 14; i++) {
     suits.forEach((suit) => {
       deck.push(createCard(i, suit));
@@ -27,13 +27,13 @@ function createCard(rank, suit) {
 function getName(rank) {
   let name = "";
   if (rank === 11) {
-    name = "jack";
+    name = "Jack";
   } else if (rank === 12) {
-    name = "queen";
+    name = "Queen";
   } else if (rank === 13) {
-    name = "king";
+    name = "King";
   } else if (rank === 14) {
-    name = "ace";
+    name = "Ace";
   } else {
     name = rank;
   }
@@ -43,9 +43,9 @@ function getName(rank) {
 function getColor(suit) {
   let color = "";
 
-  if (suit === "spades" || suit === "clubs") {
+  if (suit === "Spades" || suit === "Clubs") {
     color = "Black";
-  } else if (suit === "hearts" || suit === "diamonds") {
+  } else if (suit === "Hearts" || suit === "Diamonds") {
     color = "Red";
   }
 
