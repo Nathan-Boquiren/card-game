@@ -89,6 +89,10 @@ let playerNames = [
   "Hannah",
   "Gaines",
   "Ben",
+  "Donald Trump",
+  "Joe Biden",
+  "Jack Black",
+  "Taylor Swift",
 ];
 
 export function populatePlayers(userName) {
