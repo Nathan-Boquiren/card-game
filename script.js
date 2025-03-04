@@ -1,5 +1,4 @@
 let cl = console.log;
-let ct = console.table;
 
 // ===== Import Deck and Functions =====
 
@@ -83,8 +82,6 @@ function populateDeckContainer(deck) {
 
   document.getElementById("deal-cards-btn").addEventListener("click", () => {
     dealCardsDOM();
-    cl(document.body.getBoundingClientRect().width);
-
     if (document.body.getBoundingClientRect().width <= 768) {
       document.getElementById("deck-container").style.display = "none";
     }
