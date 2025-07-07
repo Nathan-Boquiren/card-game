@@ -1,5 +1,4 @@
 let cl = console.log;
-let ct = console.table;
 
 // ===== Build Deck =====
 

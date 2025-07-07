@@ -40,9 +40,7 @@ startBtn.addEventListener("click", () => {
 });
 
 userNameInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && userNameInput.value !== "") {
-    startGame();
-  }
+  if (e.key === "Enter" && userNameInput.value !== "") startGame();
 });
 
 function startGame() {
