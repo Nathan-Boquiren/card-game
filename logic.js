@@ -1,5 +1,3 @@
-let cl = console.log;
-
 import { endMsg, updateDom, compareScores } from "./script.js";
 
 // ===== Build Deck =====

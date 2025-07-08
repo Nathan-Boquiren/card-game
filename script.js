@@ -1,5 +1,3 @@
-let cl = console.log;
-
 // ===== Import Deck and Functions =====
 
 import { deck, Player, Bot, playerNames } from "./logic.js";
