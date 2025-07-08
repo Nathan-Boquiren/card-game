@@ -1,6 +1,8 @@
 :root {
     --primary-color: rgb(16, 48, 8);
     --secondary-color: red;
+    --secondary-color-dark: hsl(from var(--secondary-color) h s calc(l - 30));
+    --btn-hover-dark: hsl(0 0 40%);
     --primary-font: "Garamond", 'Times New Roman', Times, serif;
     --secondary-font: "Roboto", Arial, Helvetica, sans-serif;
 }
@@ -15,12 +17,18 @@
 }
 
 body {
-    background-color: var(--primary-color);
-    background-image: url(green-felt-bg.webp);
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
+    background: url(green-felt-bg.webp) center / cover no-repeat;
+    height: 100dvh;
     position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+body.start-game #start-screen {display: none}
+body.start-game #main-screen {display: flex}
+
+h3 {
+    font-size: clamp(1.2rem, 1.5vw, 1.3rem);
 }
 
 /* ===== Header ===== */
@@ -31,81 +39,82 @@ header {
 
 header h1 {
     font-family: var(--primary-font);
-    font-size: 3rem;
+    font-size: clamp(1.5rem, 4vw, 3rem);
 }
 
 /* ===== Start Screen ===== */
 
 #start-screen {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 70vh;
-}
-
-.start-card {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 3rem;
+    gap: 1rem;
+}
+
+#start-screen > * {
+    width: clamp(15rem, 50%, 20rem);
+    padding: .8rem;
+    border-radius: 100vmax;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    text-align: center;
+    border: none;
 }
 
 #user-name-input {
-    padding: 10px 1rem;
-    font-size: 1.2rem;
-    border-radius: 18px;
-    border: none;
-    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline: 3px solid white;
     color: white;
     background-color: transparent;
 }
 
 #user-name-input:focus {
-    outline: 2px solid rgba(255, 255, 255, 1);
+    translate: 0 -3px;
+    backdrop-filter: blur(3px);
+    background-color: hsl(0 0 100% / .05);
 }
 
+#user-name-input::placeholder {color: hsl(0 0% 100% / .5)}
+
 #start-btn {
-    padding: 10px 1rem;
-    border-radius: 100vmax;
-    background-color: transparent;
-    border: 2px solid white;
+    background-color: var(--secondary-color);
     color: white;
-    font-size: 1.5rem;
     cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    box-shadow: 0 6px 0 -2px var(--secondary-color-dark);
 }
 
 #start-btn:hover {
-    background-color: white;
-    color: var(--primary-color);
-    font-weight: 600;
+    translate: 0 -3px;
+    box-shadow: 0 9px 0 -3px var(--secondary-color-dark);
+}
+
+#start-btn:active {
+    translate: 0 3px;
+    box-shadow: 0 0 0 0 var(--secondary-color-dark);
 }
 
 /* ===== Main ===== */
 
 main {
+    flex: 1;
+    padding: 1rem 1rem 3rem;
     position: relative;
     display: none;
-    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 /* ===== Deck Container ===== */
 
 #deck-container {
-    position: absolute;
-    left: 10%;
-    top: 50%;
-    transform: translateY(-50%) translateX(-50%);
+    flex: 0 0 auto;
     display: flex;
+    align-items: center;
     flex-direction: column;
     gap: 1rem;
-    align-items: center;
-}
-
-#deck-container h3 {
-    font-size: 1.5rem;
+    margin-left: 2rem;
 }
 
 /* Deck Length */
@@ -113,7 +122,8 @@ main {
 #deck-length-wrapper {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: .8rem;
+    font-weight: 500;
 }
 
 #deck-length-wrapper span {
@@ -122,22 +132,25 @@ main {
     font-size: 1.5rem;
 }
 
-#deck {
-    cursor: pointer;
-    height: 250px;
-    aspect-ratio: 1/1.4;
+#deck-container {
+    --card-size: 250px;
     position: relative;
+    height: var(--card-size);
+    aspect-ratio: 1/1.4;
 }
 
+#deck {
+    cursor: pointer;
+    position: absolute;
+    inset: 0;
+}
+
+/* cards */
+
 .card {
-    height: 250px;
+    height: var(--card-size);
     aspect-ratio: 1/1.4;
-    background-color: white;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
+    border-radius: 1rem;
     background-position: center;
     background-repeat: no-repeat;
     background-size: 90%;
@@ -145,8 +158,8 @@ main {
 
 #deck .card {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
+    z-index: 0;
 }
 
 #deck .card:last-child {
@@ -158,19 +171,15 @@ main {
 
 #deal-cards-btn {
     position: absolute;
-    top: 0;
-    left: 0;
-    height: inherit;
-    aspect-ratio: inherit;
-    border-radius: 15px;
+    inset: -2px;
+    border-radius: 1rem;
     z-index: 10;
     border: none;
     background-color: var(--secondary-color);
-    outline: 2px solid var(--secondary-color);
     cursor: pointer;
     font-size: 2.3rem;
     font-weight: 600;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    text-shadow: 2px 2px 5px hsl(0 0 0 / .4);
     opacity: 0;
 }
 
@@ -183,46 +192,41 @@ main {
 
 #msg-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
+    inset: 0;
     z-index: 100;
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 2rem;
     backdrop-filter: brightness(0.5) blur(5px);
     display: none;
+    opacity: 0;
+    transition-property: display .5s ease opacity .5s ease;
+    transition-behavior: allow-discrete;
 }
 
-#msg-container div {
-    order: 1;
+#msg-container.show {
+    display: flex;
+    opacity: 1;
+    @starting-style {opacity: 0}
+}
+
+#msg-wpr {
     font-size: 4rem;
     font-weight: 600;
     font-family: var(--primary-font);
     color: var(--secondary-color);
 }
 
-#msg-container button {
-    order: 2;
-}
+/* Players */
 
-/* fade in */
-
-#msg-container.fade-in {
-    animation: fadeIn 0.3s ease forwards;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+.players-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    gap: 1rem;
 }
 
 /* ===== Player Containers ====== */
@@ -236,10 +240,6 @@ main {
     border-radius: 20px;
     min-width: 300px;
     padding: 1rem;
-}
-
-.player-container h3 {
-    font-size: 1.5rem;
 }
 
 .player-hand-container {
@@ -257,18 +257,11 @@ main {
 
 /* Show Cards Animation */
 
-.show-cards {
-    animation: showCards 0.3s ease forwards;
-}
+.show-cards {animation: showCards 0.3s ease forwards}
 
 @keyframes showCards {
-    from {
-        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
-    }
-
-    to {
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    }
+    from {clip-path: polygon(0 0, 0 0, 0 100%, 0 100%)}
+    to {clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%)}
 }
 
 /* ===== Bot/Dealer Hand ===== */
@@ -391,70 +384,50 @@ main {
 /* ===== responsive design ===== */
 
 @media(max-width: 768px) {
-    #header {
-        display: none;
-    }
-
-    #start-screen {
-        height: 100%;
-    }
-
-    #main-screen {
-        padding-bottom: 0 !important;
-        height: 100% !important;
-        justify-content: space-around;
-    }
+    #header {display: none}
 
     #deck-container {
-        left: 50%;
+        position: absolute;
         z-index: 100;
-        width: 100%;
-        height: 100%;
+        inset: 0;
+        margin: auto;
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
     }
+    
+    #deck-container > *:not(.wrapper) {display: none}
+    
+    #deck-container:not(:has(#deal-cards-btn)) {display: none}
 
-    #deck-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: inherit;
-        width: inherit;
-        background-color: transparent;
-        backdrop-filter: brightness(0.5);
-        z-index: -1;
+    #deck-container .wrapper {
+        --card-size: 13rem;
+        height: var(--card-size);
+        aspect-ratio: 1/1.4;
+        position: relative;
     }
-
+    
     #deck {
-        height: 200px;
+        border-radius: 1rem;
+        box-shadow: 0 0 0 100vmax hsl(0 0 0 / .5);
     }
 
     #deal-cards-btn {
         background-color: transparent;
-        color: rgb(3, 37, 0);
-        border: none;
-        outline: none;
         opacity: 1;
-        text-shadow: none;
+        text-shadow: 
+            2px 2px 0 var(--secondary-color), -2px -2px 0 var(--secondary-color),
+            -2px 2px 0 var(--secondary-color), 2px -2px 0 var(--secondary-color),
+            5px 5px 5px hsl(0 0 0 / .8);
         animation: breathe 0.8s ease alternate infinite;
     }
 
     @keyframes breathe {
-        from {
-            scale: 1;
-        }
-
-        to {
-            scale: 1.1;
-        }
+        from {scale: 1}
+        to {scale: 1.05}
     }
 
-    .card {
-        height: 200px;
-    }
+    #deal-cards-btn:hover {font-size: 2.3rem}
 
     .player-container {
         padding: 0.5rem;

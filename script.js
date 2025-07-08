@@ -14,16 +14,16 @@ import {
 
 // ===== DOM Elements =====
 
-const startScreen = document.getElementById("start-screen");
-const mainScreen = document.getElementById("main-screen");
 const userNameInput = document.getElementById("user-name-input");
-const startBtn = document.getElementById("start-btn");
 const deckContainer = document.getElementById("deck");
+const dealCardsBtn = document.getElementById("deal-cards-btn");
 const botContainer = document.getElementById("bot-hand-container");
 const userContainer = document.getElementById("user-hand-container");
 const cardsLeftWrapper = document.getElementById("deck-length");
 const userScoreWrapper = document.getElementById("user-score-wrapper");
 const choiceBtns = document.querySelectorAll(".choice-btn");
+const msgContainer = document.getElementById("msg-container");
+const msgWrapper = document.getElementById("msg-wpr");
 
 // ===== Global Variables =====
 
@@ -31,12 +31,8 @@ let userName = "";
 
 // ===== Start Screen Event Listeners =====
 
-startBtn.addEventListener("click", () => {
-  if (userNameInput.value !== "") {
-    startGame();
-  } else {
-    alert("Enter your name, dude.");
-  }
+document.getElementById("start-btn").addEventListener("click", () => {
+  if (userNameInput.value !== "") startGame();
 });
 
 userNameInput.addEventListener("keydown", (e) => {
@@ -45,46 +41,24 @@ userNameInput.addEventListener("keydown", (e) => {
 
 function startGame() {
   cl("===== START GAME =====");
-  startScreen.style.display = "none";
-  mainScreen.style.display = "flex";
+  document.body.classList.add("start-game");
   userName = userNameInput.value;
-  populateDeckContainer(deck);
+  populateDeckContainer(deck, true);
   populateNames("Bot", "You");
 }
 
-// ===== Style Main Section Height =====
-
-document.addEventListener("DOMContentLoaded", () => {
-  let headerHeight = document
-    .getElementById("header")
-    .getBoundingClientRect().height;
-  let vpHeight = window.innerHeight;
-  document.getElementById("main-screen").style.height = `${
-    vpHeight - headerHeight
-  }px`;
-  document.getElementById("main-screen").style.paddingBottom = `${
-    headerHeight / 2
-  }px`;
-});
-
 // ===== Populate DOM with card deck =====
 
-function populateDeckContainer(deck) {
+function populateDeckContainer(deck, isFirstTime) {
   cl(`deck length: ${deck.length}`);
-  deckContainer.innerHTML = `<button id="deal-cards-btn">Deal<br>Cards</button>`;
+  if (!isFirstTime) deckContainer.innerHTML = "";
   deck.forEach((card) => {
     deckContainer.innerHTML += `
-      <div class="card ${card.suit}-${card.rank}" style="background-image: url(card-images/${card.suit}-${card.rank}.png)">
-      </div>`;
-  });
-
-  document.getElementById("deal-cards-btn").addEventListener("click", () => {
-    dealCardsDOM();
-    if (document.body.getBoundingClientRect().width <= 768) {
-      document.getElementById("deck-container").style.display = "none";
-    }
+      <div class="card ${card.suit}-${card.rank}" style="background-image: url(card-images/${card.suit}-${card.rank}.png)"></div>`;
   });
 }
+
+dealCardsBtn.addEventListener("click", dealCardsDOM);
 
 // ===== Populate player names in DOM =====
 
@@ -100,7 +74,7 @@ function dealCardsDOM() {
   populateNames(botPlayer.name, userPlayer.name);
   calculateScore(userPlayer);
   updateDom();
-  document.getElementById("deal-cards-btn").style.display = "none";
+  dealCardsBtn.remove();
   stylePlayerCards();
   animateDeal(botContainer);
   animateDeal(userContainer);
@@ -175,34 +149,19 @@ function updateUserScore() {
 
 // ===== Win and Lose Functions
 
-const msgContainer = document.getElementById("msg-container");
-
 export function winLose(player, status) {
   cl(`========== ${player} ${status}! ==========`);
-  msgContainer.innerHTML = `<button id="reset-btn" class="choice-btn">RESET</button>`;
-  if (status === "") {
-    msgContainer.innerHTML += `<div>${player}</div>`;
-  } else {
-    msgContainer.innerHTML += `<div>${player} ${status}!</div>`;
-  }
-  setTimeout(() => {
-    msgContainer.style.display = `flex`;
-    msgContainer.classList.add("fade-in");
-    document.getElementById("reset-btn").addEventListener("click", resetGame);
-  }, 500);
+  if (player && status) msgWrapper.innerHTML = `${player} ${status}!`;
+  msgContainer.classList.add("show");
 }
 
 // ========== Reset Game Function ==========
-
-function resetGame() {
-  location.reload();
-}
 
 // ========== UPDATE DOM ==========
 
 export function updateDom() {
   cl("updated dom");
-  populateDeckContainer(deck);
+  populateDeckContainer(deck, false);
   populateHand(botPlayer, botContainer);
   populateHand(userPlayer, userContainer);
   stylePlayerCards();
@@ -214,7 +173,6 @@ function populateHand(player, container) {
   container.innerHTML = "";
   player.hand.forEach((card) => {
     container.innerHTML += `
-      <div class="card ${card.suit}-${card.rank}" style="background-image: url(card-images/${card.suit}-${card.rank}.png)">
-      </div>`;
+      <div style="background-image: url(card-images/${card.suit}-${card.rank}.png)"></div>`;
   });
 }
