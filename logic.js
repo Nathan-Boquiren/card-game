@@ -7,48 +7,39 @@ function buildDeck() {
   const suits = ["hearts", "spades", "diamonds", "clubs"];
   for (let i = 2; i <= 14; i++) {
     suits.forEach((suit) => {
-      deck.push(createCard(i, suit));
+      deck.push(new Card(i, suit));
     });
   }
 
   return deck;
 }
 
-function createCard(rank, suit) {
-  return {
-    rank: rank,
-    suit: suit,
-    color: getColor(suit),
-    name: getName(rank),
-  };
-}
-
-function getName(rank) {
-  let name = "";
-  if (rank === 11) {
-    name = "Jack";
-  } else if (rank === 12) {
-    name = "Queen";
-  } else if (rank === 13) {
-    name = "King";
-  } else if (rank === 14) {
-    name = "Ace";
-  } else {
-    name = rank;
-  }
-  return name;
-}
-
-function getColor(suit) {
-  let color = "";
-
-  if (suit === "Spades" || suit === "Clubs") {
-    color = "Black";
-  } else if (suit === "Hearts" || suit === "Diamonds") {
-    color = "Red";
+class Card {
+  constructor(rank, suit) {
+    this.rank = rank;
+    this.suit = suit;
+    this.name = this.getName();
+    this.clr = this.getClr();
   }
 
-  return color;
+  getName() {
+    if (this.rank < 11) return this.rank.toString();
+    const nameScheme = {
+      11: "Kack",
+      12: "Queen",
+      13: "King",
+      14: "Ace",
+    };
+    return nameScheme[this.rank];
+  }
+
+  getClr() {
+    if (this.suit === "Spades" || this.suit === "Clubs") {
+      return "Black";
+    } else if (this.suit === "Hearts" || this.suit === "Diamonds") {
+      return "Red";
+    }
+  }
 }
 
 export let deck = buildDeck();
@@ -74,6 +65,7 @@ export let botPlayer = "";
 export let userPlayer = "";
 
 let playerNames = [
+  "Nathan",
   "Brianna",
   "Brennan",
   "Andrew",
@@ -183,6 +175,6 @@ function compareScores() {
       `won by ${botPlayer.score - userPlayer.score}`
     );
   } else {
-    winLose("It's a tie!", "");
+    winLose("It's a tie!", null);
   }
 }

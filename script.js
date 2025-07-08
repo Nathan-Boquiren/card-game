@@ -110,11 +110,11 @@ function stylePlayerCards() {
 // ===== Event Listeners for User Choice Btns =====
 
 choiceBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
+  btn.addEventListener("pointerdown", () => {
     cl(`User chose to ${btn.id}`);
-    btn.classList.add("animateBtn");
+    btn.classList.add("animate");
     setTimeout(() => {
-      btn.classList.remove("animateBtn");
+      btn.classList.remove("animate");
     }, 300);
     if (btn.id === "hit") {
       hit(userPlayer);
@@ -151,7 +151,7 @@ function updateUserScore() {
 
 export function winLose(player, status) {
   cl(`========== ${player} ${status}! ==========`);
-  if (player && status) msgWrapper.innerHTML = `${player} ${status}!`;
+  msgWrapper.innerHTML = status ? `${player} ${status}!` : player;
   msgContainer.classList.add("show");
 }
 
@@ -173,6 +173,6 @@ function populateHand(player, container) {
   container.innerHTML = "";
   player.hand.forEach((card) => {
     container.innerHTML += `
-      <div style="background-image: url(card-images/${card.suit}-${card.rank}.png)"></div>`;
+      <div class="card" style="background-image: url(card-images/${card.suit}-${card.rank}.png)"></div>`;
   });
 }
