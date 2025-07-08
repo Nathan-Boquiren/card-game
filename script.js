@@ -2,32 +2,21 @@ let cl = console.log;
 
 // ===== Import Deck and Functions =====
 
-import {
-  deck,
-  populatePlayers,
-  botPlayer,
-  userPlayer,
-  calculateScore,
-  hit,
-  stand,
-} from "./logic.js";
+import { deck, Player, Bot, playerNames } from "./logic.js";
 
 // ===== DOM Elements =====
 
 const userNameInput = document.getElementById("user-name-input");
-const deckContainer = document.getElementById("deck");
 const dealCardsBtn = document.getElementById("deal-cards-btn");
-const botContainer = document.getElementById("bot-hand-container");
-const userContainer = document.getElementById("user-hand-container");
-const cardsLeftWrapper = document.getElementById("deck-length");
-const userScoreWrapper = document.getElementById("user-score-wrapper");
 const choiceBtns = document.querySelectorAll(".choice-btn");
 const msgContainer = document.getElementById("msg-container");
 const msgWrapper = document.getElementById("msg-wpr");
 
 // ===== Global Variables =====
 
-let userName = "";
+let user;
+let bot;
+let players = [];
 
 // ===== Start Screen Event Listeners =====
 
@@ -36,143 +25,68 @@ document.getElementById("start-btn").addEventListener("click", () => {
 });
 
 userNameInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && userNameInput.value !== "") startGame();
+  if (e.key === "Enter" && userNameInput.value !== "")
+    startGame(userNameInput.value);
 });
 
-function startGame() {
-  cl("===== START GAME =====");
+// ===== Create PLayers =====
+
+function createPlayers(userName) {
+  const randName = playerNames[Math.floor(Math.random() * playerNames.length)];
+  user = new Player(userName, "user");
+  bot = new Bot(randName, "bot");
+  players.push(user, bot);
+}
+
+// ===== Start Game =====
+
+function startGame(userNameInput) {
   document.body.classList.add("start-game");
-  userName = userNameInput.value;
-  populateDeckContainer(deck, true);
-  populateNames("Bot", "You");
-}
-
-// ===== Populate DOM with card deck =====
-
-function populateDeckContainer(deck, isFirstTime) {
-  cl(`deck length: ${deck.length}`);
-  if (!isFirstTime) deckContainer.innerHTML = "";
-  deck.forEach((card) => {
-    deckContainer.innerHTML += `
-      <div class="card ${card.suit}-${card.rank}" style="background-image: url(card-images/${card.suit}-${card.rank}.png)"></div>`;
-  });
-}
-
-dealCardsBtn.addEventListener("click", dealCardsDOM);
-
-// ===== Populate player names in DOM =====
-
-function populateNames(botName, userName) {
-  document.getElementById("bot-name-wrapper").innerHTML = `${botName}`;
-  document.getElementById("user-name-wrapper").innerHTML = `${userName}`;
+  deck.populateCards(true);
+  createPlayers(userNameInput);
+  players.forEach((p) => p.renderName());
 }
 
 // ===== Deal Cards in DOM =====
 
-function dealCardsDOM() {
-  populatePlayers(userName);
-  populateNames(botPlayer.name, userPlayer.name);
-  calculateScore(userPlayer);
+dealCardsBtn.addEventListener("click", () => {
+  user.calculateScore();
   updateDom();
   dealCardsBtn.remove();
-  stylePlayerCards();
-  animateDeal(botContainer);
-  animateDeal(userContainer);
-}
-
-// === Animate Initial Deal ===
-
-function animateDeal(container) {
-  container.classList.add("show-cards");
-  setTimeout(() => {
-    container.classList.remove("show-cards");
-  }, 300);
-}
-
-// ===== Style Player Cards Overlap =====
-
-function stylePlayerCards() {
-  const playerContainers = document.querySelectorAll(".player-hand-container");
-  playerContainers.forEach((container) => {
-    const cards = container.querySelectorAll(".card");
-    const cardWidth = 178.5714286;
-    const overlap = 50;
-    const newContainerWidth = cardWidth + (cards.length - 1) * overlap;
-
-    container.style.width = `${newContainerWidth}px`;
-
-    cards.forEach((card, i) => {
-      card.style.left = `${i * overlap}px`;
-    });
-  });
-}
+  players.forEach((p) => p.renderHand(true));
+});
 
 // ===== Event Listeners for User Choice Btns =====
 
 choiceBtns.forEach((btn) => {
   btn.addEventListener("pointerdown", () => {
-    cl(`User chose to ${btn.id}`);
     btn.classList.add("animate");
-    setTimeout(() => {
-      btn.classList.remove("animate");
-    }, 300);
-    if (btn.id === "hit") {
-      hit(userPlayer);
-      updateDom();
-    } else if (btn.id === "stand") {
-      stand();
-      flipBotCard();
-    }
+    setTimeout(btn.classList.remove("animate"), 300);
+    btn.id === "hit" ? user.hit() : bot.turn();
   });
 });
 
-// ===== Flip Bot Card =====
+// ===== Win and Lose Functions =====
 
-function flipBotCard() {
-  cl(" ===== flipping dealer card =====");
-  botContainer.classList.add("remove-after");
-}
-
-// ===== Update Cards left in deck =====
-
-function updateCardsLeft(deck) {
-  cardsLeftWrapper.innerHTML = deck.length;
-}
-
-// ===== Update user score =====
-
-function updateUserScore() {
-  calculateScore(userPlayer);
-  cl(`user score: ${userPlayer.score}`);
-  userScoreWrapper.innerHTML = `${userPlayer.score}`;
-}
-
-// ===== Win and Lose Functions
-
-export function winLose(player, status) {
-  cl(`========== ${player} ${status}! ==========`);
+export function endMsg(player, status) {
   msgWrapper.innerHTML = status ? `${player} ${status}!` : player;
   msgContainer.classList.add("show");
 }
-
-// ========== Reset Game Function ==========
-
-// ========== UPDATE DOM ==========
+// ===== UPDATE DOM =====
 
 export function updateDom() {
-  cl("updated dom");
-  populateDeckContainer(deck, false);
-  populateHand(botPlayer, botContainer);
-  populateHand(userPlayer, userContainer);
-  stylePlayerCards();
-  updateCardsLeft(deck);
-  updateUserScore();
+  deck.populateCards(false);
+  players.forEach((p) => p.renderHand(false));
+  user.updateScoreElement();
 }
 
-function populateHand(player, container) {
-  container.innerHTML = "";
-  player.hand.forEach((card) => {
-    container.innerHTML += `
-      <div class="card" style="background-image: url(card-images/${card.suit}-${card.rank}.png)"></div>`;
-  });
+// ===== Compare Scores =====
+
+export function compareScores() {
+  if (user.score === bot.score) return endMsg("It's a tie!", null);
+
+  const winner = user.score > bot.score ? user : bot;
+  const loser = user.score > bot.score ? bot : user;
+
+  endMsg(`Congrats, ${winner.name}`, `won by ${winner.score - loser.score}`);
 }

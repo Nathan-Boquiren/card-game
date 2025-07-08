@@ -24,8 +24,10 @@
 
     <main id="main-screen">
         <div id="deck-container">
-            <h3>Deck</h3>
-            <h4 id="deck-length-wrapper">Cards Remaining: <span id="deck-length">52</span></h4>
+            <div class="deck-length-wrapper">
+                <h5>Cards Left:</h5>
+                <span id="deck-length">52</span>
+            </div>
             <div class="wrapper">
                 <div id="deck"></div>
                 <button id="deal-cards-btn">Deal<br>Cards</button>
@@ -34,15 +36,18 @@
 
         <div class="players-container">
             <div id="bot-container" class="player-container">
-                <h3>PLayer: <span id="bot-name-wrapper"></span></h3>
+                <h3 class="player-name" id="bot-name-wrapper"></h3>
                 <img src="" alt="" id="bot-img">
                 <div id="bot-hand-container" class="player-hand-container"></div>
             </div>
 
             <div id="user-container" class="player-container">
-                <h3>PLayer: <span id="user-name-wrapper"></span></h3>
+                <h3 class="player-name" id="user-name-wrapper"></h3>
                 <div class="wrapper">
-                    <div class="player-score">Your score: <span id="user-score-wrapper">00</span></div>
+                    <div class="player-score">
+                        <h4>score</h4>
+                        <span id="user-score-wrapper">00</span>
+                    </div>
                     <button id="hit" class="choice-btn">HIT</button>
                     <button id="stand" class="choice-btn">STAND</button>
                 </div>
